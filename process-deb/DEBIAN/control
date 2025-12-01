@@ -1,0 +1,8 @@
+Package: process-schedule 
+Version: 1.0.0
+Section: base
+Priority: optional
+Architecture: amd64
+Depends: libgtk-3-0, libayatana-appindicator3-1
+Maintainer: Rifat Nur Shafin <shafin2310005101196@diu.edu.bd>
+Description: Flutter desktop application packaged as .deb

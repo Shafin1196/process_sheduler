@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Process Scheduling
+Comment=Your Flutter desktop app
+Exec=/usr/local/bin/scheduling_simulator
+Icon=/usr/local/bin/data/flutter_assets/icons.png
+Terminal=false
+Type=Application
+Categories=Utility;
