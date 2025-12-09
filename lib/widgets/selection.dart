@@ -69,6 +69,7 @@ class _SelectionState extends ConsumerState<Selection> {
                     ref.read(priorityController.notifier).state=TextEditingController();
                     ref.read(timeQuantumController.notifier).state=TextEditingController();
                     ref.read(generateFlag.notifier).state=false;
+                    ref.read(grantChart.notifier).state=[];
                   }, 
                   style: ElevatedButton.styleFrom(
                     elevation: 5,
@@ -100,6 +101,7 @@ class _SelectionState extends ConsumerState<Selection> {
                     ref.read(burstTimeController.notifier).state=TextEditingController();
                     ref.read(priorityController.notifier).state=TextEditingController();
                     ref.read(timeQuantumController.notifier).state=TextEditingController();
+                    ref.read(grantChart.notifier).state=[];
                   }, 
                   style: ElevatedButton.styleFrom(
                     elevation: 5,

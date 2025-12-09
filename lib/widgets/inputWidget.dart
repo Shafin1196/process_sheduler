@@ -232,7 +232,7 @@ class _InputState extends ConsumerState<Input> {
                             },
                             label: Text(
                               "Add Process",
-                              style: GoogleFonts.dancingScript(
+                              style: GoogleFonts.openSans(
                                 color: textColor,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20,
@@ -259,6 +259,7 @@ class _InputState extends ConsumerState<Input> {
                           return ElevatedButton.icon(
                             onPressed: () {
                               ref.read(processLists.notifier).state = [];
+                              ref.read(grantChart.notifier).state=[];
                               ref.read(arivalTimeController.notifier).state =
                                   TextEditingController();
                               ref.read(burstTimeController.notifier).state =
@@ -271,7 +272,7 @@ class _InputState extends ConsumerState<Input> {
                             },
                             label: Text(
                               "Clear",
-                              style: GoogleFonts.dancingScript(
+                              style: GoogleFonts.openSans(
                                 color: textColor,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:scheduling_simulator/constants/constant.dart';
+import 'package:scheduling_simulator/models/process_data.dart';
 import 'package:scheduling_simulator/providers/constant_provider.dart';
 import 'package:scheduling_simulator/widgets/simulate_data.dart';
 
@@ -60,6 +61,8 @@ class _SimulatesState extends ConsumerState<Simulates> {
                   builder: (context, ref, child) {
                     final flag = ref.watch(generateFlag);
                     final listProcess = ref.watch(processLists);
+                    // final grantCharts = ref.watch(grantChart);
+                    final priority = ref.watch(priorityHighLow);
                     return ElevatedButton(
                       onPressed: () {
                         if (algoProvider == "FCFS") {
@@ -112,11 +115,137 @@ class _SimulatesState extends ConsumerState<Simulates> {
                           ];
                           listProcess.sort((a, b) => a.id.compareTo(b.id));
                         } else if (algoProvider == "SRTF") {
-                          
+                          int time = 0;
+                          int completed = 0;
+                          int n = listProcess.length;
+                          List<int> remBt = listProcess
+                              .map((p) => p.bt)
+                              .toList();
+                          List<bool> started = List.filled(n, false);
+                          List<ProcessData> grant = [];
+
+                          while (completed < n) {
+                            int idx = -1;
+                            int minRem = 1 << 30;
+                            for (int i = 0; i < n; i++) {
+                              if (listProcess[i].at <= time &&
+                                  remBt[i] > 0 &&
+                                  remBt[i] < minRem) {
+                                minRem = remBt[i];
+                                idx = i;
+                              }
+                            }
+                            if (idx == -1) {
+                              time++;
+                              continue;
+                            }
+                            if (!started[idx]) {
+                              listProcess[idx].st = time;
+                              started[idx] = true;
+                            }
+                            remBt[idx]--;
+                            time++;
+                            if (remBt[idx] == 0) {
+                              listProcess[idx].ct = time;
+                              listProcess[idx].setOtherTimes();
+                              listProcess[idx].finished = true;
+                              completed++;
+                              grant.add(listProcess[idx]);
+                            }
+                          }
+                          ref.read(grantChart.notifier).state = [...grant];
                         } else if (algoProvider == "RR") {
-                          
+                          int time = 0;
+                          int completed = 0;
+                          final quantumProvider = ref.watch(
+                            timeQuantumController,
+                          );
+                          int quantum = int.tryParse(quantumProvider.text) ?? 1;
+                          List<int> remBt = listProcess
+                              .map((p) => p.bt)
+                              .toList();
+                          List<ProcessData> grant = [];
+                          List<bool> visited = List.filled(
+                            listProcess.length,
+                            false,
+                          );
+                          List<int> readyQueue = [];
+                          while (completed < listProcess.length) {
+                            for (int i = 0; i < listProcess.length; i++) {
+                              if (listProcess[i].at <= time &&
+                                  !visited[i] &&
+                                  remBt[i] > 0) {
+                                readyQueue.add(i);
+                                visited[i] = true;
+                              }
+                            }
+                            if (readyQueue.isEmpty) {
+                              time++;
+                              continue;
+                            }
+                            int idx = readyQueue.removeAt(0);
+                            var proc = listProcess[idx];
+                            if (remBt[idx] == proc.bt) {
+                              proc.st = time;
+                            }
+                            int execTime = remBt[idx] > quantum
+                                ? quantum
+                                : remBt[idx];
+                            time += execTime;
+                            remBt[idx] -= execTime;
+                            for (int i = 0; i < listProcess.length; i++) {
+                              if (listProcess[i].at > proc.at &&
+                                  listProcess[i].at <= time &&
+                                  !visited[i] &&
+                                  remBt[i] > 0) {
+                                readyQueue.add(i);
+                                visited[i] = true;
+                              }
+                            }
+                            if (remBt[idx] == 0) {
+                              proc.ct = time;
+                              proc.setOtherTimes();
+                              proc.finished = true;
+                              completed++;
+                              final comProc=proc.copyWith(end: time);
+                              grant.add(comProc);
+                            } else {
+                              readyQueue.add(idx);
+                            }
+                          }
+                          ref.read(grantChart.notifier).state = [...grant];
                         } else if (algoProvider == "PQ") {
-                          
+                          int time = 0;
+                          int count = 0;
+                          List<ProcessData> grant = [];
+                          while (count < listProcess.length) {
+                            var smallest = -1;
+                            for (var i = 0; i < listProcess.length; i++) {
+                              var current = listProcess[i];
+                              if (current.at <= time && !current.finished) {
+                                bool compare = priority
+                                    ? (current.pq!) > listProcess[smallest].pq!
+                                    : (current.pq!) < listProcess[smallest].pq!;
+                                if (smallest == -1 || compare) {
+                                  smallest = i;
+                                }
+                              }
+                            }
+                            if (smallest == -1) {
+                              time++;
+                              continue;
+                            }
+                            // print(listProcess[smallest].toString());
+                            time += listProcess[smallest].bt;
+                            listProcess[smallest].ct = time;
+                            listProcess[smallest].setOtherTimes();
+                            listProcess[smallest].finished = true;
+                            count++;
+                            final current = listProcess[smallest];
+                            grant.add(current);
+                            // print(current.toString());
+                          }
+                          ref.read(grantChart.notifier).state = [...grant];
                         }
                         ref.read(generateFlag.notifier).state = !flag;
                       },
