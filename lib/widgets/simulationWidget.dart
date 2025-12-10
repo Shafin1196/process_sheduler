@@ -84,6 +84,7 @@ class _SimulatesState extends ConsumerState<Simulates> {
                           listProcess.sort((a, b) => a.id.compareTo(b.id));
                         } else if (algoProvider == "SJF") {
                           int time = 0;
+                          List<ProcessData>grant=[];
                           List finished = List.filled(
                             listProcess.length,
                             false,
@@ -110,12 +111,13 @@ class _SimulatesState extends ConsumerState<Simulates> {
                             listProcess[idx].end = time;
                             listProcess[idx].setOtherTimes();
                             finished[idx] = true;
+                            final proc=listProcess[idx];
+                            grant.add(proc);
                             completed++;
                           }
                           ref.read(grantChart.notifier).state = [
-                            ...listProcess,
+                            ...grant
                           ];
-                          listProcess.sort((a, b) => a.id.compareTo(b.id));
                         } else if (algoProvider == "SRTF") {
                           int n = listProcess.length;
                           int time = 0;
