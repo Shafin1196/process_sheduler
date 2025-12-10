@@ -287,6 +287,7 @@ class _SimulatesState extends ConsumerState<Simulates> {
                             listProcess[smallest].st = time;
                             time += listProcess[smallest].bt;
                             listProcess[smallest].ct = time;
+                            listProcess[smallest].end = time;
                             listProcess[smallest].setOtherTimes();
                             listProcess[smallest].finished = true;
                             count++;
