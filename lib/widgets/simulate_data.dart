@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:scheduling_simulator/constants/constant.dart';
+import 'package:scheduling_simulator/constants/methods.dart';
 import 'package:scheduling_simulator/providers/constant_provider.dart';
 
 class SimulateData extends ConsumerStatefulWidget {
@@ -36,10 +37,10 @@ class _SimulateDataState extends ConsumerState<SimulateData> {
               ? Center(
                   child: Text(
                     "Click on generate or add process!",
-                    style: GoogleFonts.dancingScript(
+                    style: GoogleFonts.openSans(
                       color: textColor,
                       fontWeight: FontWeight.bold,
-                      fontSize: 25,
+                      fontSize: 20,
                     ),
                   ),
                 )
@@ -47,25 +48,24 @@ class _SimulateDataState extends ConsumerState<SimulateData> {
                   // physics: NeverScrollableScrollPhysics(),
                   child: Column(
                     children: [
-                      Text(
-                        "Process Table",
-                        style: GoogleFonts.dancingScript(
-                          color: textColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 25,
-                        ),
+                      text(
+                        "Process Data",
+                        textColor,
+                        25,
+                        fontWeight: FontWeight.bold,
                       ),
+                      SizedBox(height: 10),
                       Card(
                         color: cardColor,
                         child: DataTable(
                           columnSpacing: 20,
                           border: TableBorder(),
-                          headingTextStyle: GoogleFonts.dancingScript(
+                          headingTextStyle: GoogleFonts.openSans(
                             color: white,
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
                           ),
-                          dataTextStyle: GoogleFonts.dancingScript(
+                          dataTextStyle: GoogleFonts.openSans(
                             color: white,
                             fontWeight: FontWeight.bold,
                             fontSize: 15,
@@ -102,7 +102,7 @@ class _SimulateDataState extends ConsumerState<SimulateData> {
                       SizedBox(height: 15),
                       Text(
                         "Grant Chart",
-                        style: GoogleFonts.dancingScript(
+                        style: GoogleFonts.openSans(
                           color: textColor,
                           fontWeight: FontWeight.bold,
                           fontSize: 25,
@@ -150,7 +150,7 @@ class _SimulateDataState extends ConsumerState<SimulateData> {
                                           child: Center(
                                             child: Text(
                                               "P(${current.id})\n${current.st}-${current.ct}",
-                                              style: GoogleFonts.dancingScript(
+                                              style: GoogleFonts.openSans(
                                                 color: white,
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 15,
@@ -183,7 +183,7 @@ class _SimulateDataState extends ConsumerState<SimulateData> {
                             children: [
                               Text(
                                 "Avg. Trun Around Time: ${tatAvg.toStringAsFixed(2)}",
-                                style: GoogleFonts.dancingScript(
+                                style: GoogleFonts.openSans(
                                   color: textColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15,
@@ -192,7 +192,7 @@ class _SimulateDataState extends ConsumerState<SimulateData> {
                               SizedBox(height: 7),
                               Text(
                                 "Avg. Wating Time: ${wtAvg.toStringAsFixed(2)}",
-                                style: GoogleFonts.dancingScript(
+                                style: GoogleFonts.openSans(
                                   color: textColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15,

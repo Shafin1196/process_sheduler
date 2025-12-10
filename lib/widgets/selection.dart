@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:scheduling_simulator/constants/constant.dart';
+import 'package:scheduling_simulator/constants/methods.dart';
 import 'package:scheduling_simulator/providers/constant_provider.dart';
 
 class Selection extends ConsumerStatefulWidget {
@@ -77,13 +77,7 @@ class _SelectionState extends ConsumerState<Selection> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(10)),
                     backgroundColor: algorithmProvider==key?selectedColor:borderColor
                   ),
-                  child: Text(title,
-                  style: GoogleFonts.dancingScript(
-                    color: algorithmProvider==key?white:textColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20
-                    ),
-                  ),
+                  child: text(title, algorithmProvider==key?white:textColor, 18,fontWeight: FontWeight.bold)
                   );
               });
   }
@@ -109,13 +103,7 @@ class _SelectionState extends ConsumerState<Selection> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(10)),
                     backgroundColor: algorithmProvider==key?selectedColor:borderColor
                   ),
-                  child: Text(title,
-                  style: GoogleFonts.dancingScript(
-                    color: algorithmProvider==key?white:textColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20
-                    ),
-                  ),
+                  child: text(title, algorithmProvider==key?white:textColor, 18,fontWeight: FontWeight.bold)
                   );
               }),
             );

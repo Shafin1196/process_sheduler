@@ -47,7 +47,7 @@ class _SimulatesState extends ConsumerState<Simulates> {
               children: [
                 Text(
                   algo,
-                  style: GoogleFonts.dancingScript(
+                  style: GoogleFonts.openSans(
                     color: textColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
@@ -207,7 +207,7 @@ class _SimulatesState extends ConsumerState<Simulates> {
                               proc.setOtherTimes();
                               proc.finished = true;
                               completed++;
-                              final comProc=proc.copyWith(end: time);
+                              final comProc = proc.copyWith(end: time);
                               grant.add(comProc);
                             } else {
                               readyQueue.add(idx);
@@ -220,14 +220,33 @@ class _SimulatesState extends ConsumerState<Simulates> {
                           List<ProcessData> grant = [];
                           while (count < listProcess.length) {
                             var smallest = -1;
+                            var min_priority = priority ? -1 : 1 << 30;
                             for (var i = 0; i < listProcess.length; i++) {
                               var current = listProcess[i];
                               if (current.at <= time && !current.finished) {
-                                bool compare = priority
-                                    ? (current.pq!) > listProcess[smallest].pq!
-                                    : (current.pq!) < listProcess[smallest].pq!;
-                                if (smallest == -1 || compare) {
+                                if (smallest == -1) {
                                   smallest = i;
+                                  min_priority = current.pq!;
+                                } else {
+                                  if (priority) {
+                                    // Higher priority value is better
+                                    if (current.pq! > min_priority ||
+                                        (current.pq! == min_priority &&
+                                            current.at <
+                                                listProcess[smallest].at)) {
+                                      smallest = i;
+                                      min_priority = current.pq!;
+                                    }
+                                  } else {
+                                    // Lower priority value is better
+                                    if (current.pq! < min_priority ||
+                                        (current.pq! == min_priority &&
+                                            current.at <
+                                                listProcess[smallest].at)) {
+                                      smallest = i;
+                                      min_priority = current.pq!;
+                                    }
+                                  }
                                 }
                               }
                             }
@@ -236,6 +255,7 @@ class _SimulatesState extends ConsumerState<Simulates> {
                               continue;
                             }
                             // print(listProcess[smallest].toString());
+                            listProcess[smallest].st = time;
                             time += listProcess[smallest].bt;
                             listProcess[smallest].ct = time;
                             listProcess[smallest].setOtherTimes();
@@ -259,7 +279,7 @@ class _SimulatesState extends ConsumerState<Simulates> {
                       ),
                       child: Text(
                         "Generate",
-                        style: GoogleFonts.dancingScript(
+                        style: GoogleFonts.openSans(
                           color: textColor,
                           fontWeight: FontWeight.bold,
                           fontSize: 20,

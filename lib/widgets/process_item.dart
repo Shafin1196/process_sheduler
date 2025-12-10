@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:scheduling_simulator/constants/constant.dart';
+import 'package:scheduling_simulator/constants/methods.dart';
 import 'package:scheduling_simulator/models/process_data.dart';
 import 'package:scheduling_simulator/providers/constant_provider.dart';
 
@@ -27,46 +27,25 @@ class ProcessItem extends ConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    "Process ID:  P (${currentItem.id})",
-                    style: GoogleFonts.dancingScript(
-                      color: white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  text("Process ID:  P${currentItem.id}", white, 15,fontWeight: FontWeight.bold),
                 ],
               ),
+              Spacer(),
               Consumer(
                 builder: (context, ref, child) {
                   final algoProvider = ref.watch(selectedAlgorithm);
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        "Burst Time:  ${currentItem.bt} sec",
-                        style: GoogleFonts.dancingScript(
-                          color: white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                       text("Arival Time:  ${currentItem.at} sec", white, 12,fontWeight: FontWeight.bold),
                       Spacer(),
-                      Text(
-                        "Arival Time:  ${currentItem.at} sec",
-                        style: GoogleFonts.dancingScript(
-                          color: white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      text("Burst Time:  ${currentItem.bt} sec", white, 12,fontWeight: FontWeight.bold),
+                      
+                     
                       algoProvider == "PQ"
                           ? Spacer():SizedBox.shrink(),
                       algoProvider == "PQ"
-                          ? Text(
-                              "Priority:  ${currentItem.pq} sec",
-                              style: GoogleFonts.dancingScript(
-                                color: white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            )
+                          ? text("Priority:  ${currentItem.pq} ", white, 12,fontWeight: FontWeight.bold)
                           : SizedBox.shrink(),
                     ],
                   );

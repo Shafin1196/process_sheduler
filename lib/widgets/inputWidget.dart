@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:scheduling_simulator/constants/constant.dart';
+import 'package:scheduling_simulator/constants/methods.dart';
 import 'package:scheduling_simulator/models/process_data.dart';
 import 'package:scheduling_simulator/providers/constant_provider.dart';
 import 'package:scheduling_simulator/widgets/process_item.dart';
@@ -74,14 +75,15 @@ class _InputState extends ConsumerState<Input> {
                                       val ?? true;
                                 },
                               ),
-                              Text(
-                                "Higher Value",
-                                style: GoogleFonts.dancingScript(
-                                  color: textColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                ),
-                              ),
+                              text("Higher Value", textColor, 20),
+                              // Text(
+                              //   "Higher Value",
+                              //   style: GoogleFonts.dancingScript(
+                              //     color: textColor,
+                              //     fontWeight: FontWeight.bold,
+                              //     fontSize: 20,
+                              //   ),
+                              // ),
                             ],
                           );
                         },
@@ -160,14 +162,7 @@ class _InputState extends ConsumerState<Input> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Text(
-                                    "No process added yet!",
-                                    style: GoogleFonts.dancingScript(
-                                      color: textColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20,
-                                    ),
-                                  ),
+                                  text("No Process added yet!", textColor, 20),
 
                                   Image.asset(
                                     "assets/history2.gif",
@@ -230,14 +225,7 @@ class _InputState extends ConsumerState<Input> {
                                 );
                               });
                             },
-                            label: Text(
-                              "Add Process",
-                              style: GoogleFonts.openSans(
-                                color: textColor,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                              ),
-                            ),
+                            label: text("Add Process", textColor, 20,fontWeight: FontWeight.bold),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: borderColor.withOpacity(1),
                               elevation: 7,
@@ -270,14 +258,7 @@ class _InputState extends ConsumerState<Input> {
                                   TextEditingController();
                               ref.read(generateFlag.notifier).state = false;
                             },
-                            label: Text(
-                              "Clear",
-                              style: GoogleFonts.openSans(
-                                color: textColor,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                              ),
-                            ),
+                            label: text("Clear", textColor, 20,fontWeight: FontWeight.bold),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: borderColor.withOpacity(1),
                               elevation: 7,
@@ -307,16 +288,9 @@ class _InputState extends ConsumerState<Input> {
 
   InputDecoration inputDecoration(String hint) {
     return InputDecoration(
-      label: Text(
-        hint,
-        style: GoogleFonts.dancingScript(
-          color: textColor,
-          fontWeight: FontWeight.bold,
-          fontSize: 16,
-        ),
-      ),
+      label: text(hint, textColor, 12),
       hintText: hint,
-      hintStyle: GoogleFonts.dancingScript(
+      hintStyle: GoogleFonts.openSans(
         color: textColor,
         fontWeight: FontWeight.bold,
         fontSize: 16,
