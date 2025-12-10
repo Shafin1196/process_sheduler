@@ -149,7 +149,7 @@ class _SimulateDataState extends ConsumerState<SimulateData> {
                                           ),
                                           child: Center(
                                             child: Text(
-                                              "P(${current.id})\n${current.st}-${current.ct}",
+                                              "P(${current.id})\n${current.st}-${current.end}",
                                               style: GoogleFonts.openSans(
                                                 color: white,
                                                 fontWeight: FontWeight.bold,

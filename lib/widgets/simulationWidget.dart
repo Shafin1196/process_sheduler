@@ -75,6 +75,7 @@ class _SimulatesState extends ConsumerState<Simulates> {
                             listProcess[i].st = time;
                             time += listProcess[i].bt;
                             listProcess[i].ct = time;
+                            listProcess[i].end = time;
                             listProcess[i].setOtherTimes();
                           }
                           ref.read(grantChart.notifier).state = [
@@ -106,6 +107,7 @@ class _SimulatesState extends ConsumerState<Simulates> {
                             listProcess[idx].st = time;
                             time += listProcess[idx].bt;
                             listProcess[idx].ct = time;
+                            listProcess[idx].end = time;
                             listProcess[idx].setOtherTimes();
                             finished[idx] = true;
                             completed++;
@@ -115,9 +117,9 @@ class _SimulatesState extends ConsumerState<Simulates> {
                           ];
                           listProcess.sort((a, b) => a.id.compareTo(b.id));
                         } else if (algoProvider == "SRTF") {
+                          int n = listProcess.length;
                           int time = 0;
                           int completed = 0;
-                          int n = listProcess.length;
                           List<int> remBt = listProcess
                               .map((p) => p.bt)
                               .toList();
@@ -139,80 +141,107 @@ class _SimulatesState extends ConsumerState<Simulates> {
                               time++;
                               continue;
                             }
+
+                            // For Gantt chart: record each time slice
+                            grant.add(
+                              listProcess[idx].copyWith(
+                                st: time,
+                                end: time + 1,
+                              ),
+                            );
+
                             if (!started[idx]) {
                               listProcess[idx].st = time;
                               started[idx] = true;
                             }
+
                             remBt[idx]--;
                             time++;
+
                             if (remBt[idx] == 0) {
                               listProcess[idx].ct = time;
                               listProcess[idx].setOtherTimes();
                               listProcess[idx].finished = true;
                               completed++;
-                              grant.add(listProcess[idx]);
                             }
                           }
+                          listProcess.sort((a, b) => a.id.compareTo(b.id));
                           ref.read(grantChart.notifier).state = [...grant];
                         } else if (algoProvider == "RR") {
-                          int time = 0;
-                          int completed = 0;
+                          int n = listProcess.length;
                           final quantumProvider = ref.watch(
                             timeQuantumController,
                           );
                           int quantum = int.tryParse(quantumProvider.text) ?? 1;
+                          listProcess.sort((a, b) => a.at.compareTo(b.at));
                           List<int> remBt = listProcess
                               .map((p) => p.bt)
                               .toList();
+                          int time = 0;
+                          int completed = 0;
                           List<ProcessData> grant = [];
-                          List<bool> visited = List.filled(
-                            listProcess.length,
-                            false,
-                          );
-                          List<int> readyQueue = [];
-                          while (completed < listProcess.length) {
-                            for (int i = 0; i < listProcess.length; i++) {
-                              if (listProcess[i].at <= time &&
-                                  !visited[i] &&
-                                  remBt[i] > 0) {
-                                readyQueue.add(i);
-                                visited[i] = true;
+                          List<bool> visited = List.filled(n, false);
+                          List<int> queue = [];
+
+                          int minIdx = 0;
+                          for (int i = 1; i < n; i++) {
+                            if (listProcess[i].at < listProcess[minIdx].at) {
+                              minIdx = i;
+                            }
+                          }
+                          queue.add(minIdx);
+                          visited[minIdx] = true;
+
+                          while (completed < n) {
+                            if (queue.isEmpty) {
+                              for (int i = 0; i < n; i++) {
+                                if (remBt[i] > 0) {
+                                  time = listProcess[i].at;
+                                  queue.add(i);
+                                  visited[i] = true;
+                                  break;
+                                }
                               }
                             }
-                            if (readyQueue.isEmpty) {
-                              time++;
-                              continue;
-                            }
-                            int idx = readyQueue.removeAt(0);
+
+                            int idx = queue.removeAt(0);
                             var proc = listProcess[idx];
-                            if (remBt[idx] == proc.bt) {
-                              proc.st = time;
-                            }
+
                             int execTime = remBt[idx] > quantum
                                 ? quantum
                                 : remBt[idx];
+
+                            // Add to grant chart for this time slice
+                            grant.add(
+                              proc.copyWith(st: time, end: time + execTime),
+                            );
+
+                            if (remBt[idx] == proc.bt) {
+                              proc.st = time;
+                            }
+
                             time += execTime;
                             remBt[idx] -= execTime;
-                            for (int i = 0; i < listProcess.length; i++) {
-                              if (listProcess[i].at > proc.at &&
+
+                            for (int i = 0; i < n; i++) {
+                              if (!visited[i] &&
                                   listProcess[i].at <= time &&
-                                  !visited[i] &&
                                   remBt[i] > 0) {
-                                readyQueue.add(i);
+                                queue.add(i);
                                 visited[i] = true;
                               }
                             }
+
                             if (remBt[idx] == 0) {
+                              completed++;
                               proc.ct = time;
                               proc.setOtherTimes();
                               proc.finished = true;
-                              completed++;
-                              final comProc = proc.copyWith(end: time);
-                              grant.add(comProc);
                             } else {
-                              readyQueue.add(idx);
+                              queue.add(idx);
                             }
                           }
+                          listProcess.sort((a, b) => a.id.compareTo(b.id));
                           ref.read(grantChart.notifier).state = [...grant];
                         } else if (algoProvider == "PQ") {
                           int time = 0;
